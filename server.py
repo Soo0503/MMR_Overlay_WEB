@@ -276,39 +276,43 @@ def get_player_data(player_id):
 
     return {
 
-        "player": player_name,
+    "player": player_name,
 
-        "mmr": mmr,
+    "mmr": mmr,
 
-        "last_change": last_change,
+    "last_change": last_change,
 
-        "win_rate":
-            last10_stats["win_rate"],
+    "win_rate":
+        last10_stats["win_rate"],
 
-        "wl":
-            last10_stats["wl"],
+    "wl":
+        last10_stats["wl"],
 
-        "mmr_change":
-            last10_stats["mmr_change"],
+    "mmr_change":
+        last10_stats["mmr_change"],
 
-        "avg_score":
-            last10_stats["avg_score"],
+    "avg_score":
+        last10_stats["avg_score"],
 
-        "top_score":
-            last10_stats["top_score"],
+    "top_score":
+        last10_stats["top_score"],
 
-        "f6_win_rate":
-            format6_stats["win_rate"],
+    "f6_win_rate":
+        format6_stats["win_rate"],
 
-        "f6_wl":
-            format6_stats["wl"],
+    "f6_wl":
+        format6_stats["wl"],
 
-        "f6_mmr_change":
-            format6_stats["mmr_change"],
+    "f6_mmr_change":
+        format6_stats["mmr_change"],
 
-        "f6_avg_score":
-            format6_stats["avg_score"],
-    }
+    "f6_avg_score":
+        format6_stats["avg_score"],
+
+    # 一時的な確認用
+    "DEBUG_PLAYER_API":
+        data_player,
+}
 
 
 # =========================================================
