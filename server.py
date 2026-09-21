@@ -167,27 +167,6 @@ def get_player_data(player_id):
     data_player = res_player.json()
 
     # -----------------------------------------
-    # DEBUG
-    # Peak MMRの実際のキーを確認するためのログ
-    # -----------------------------------------
-
-    print()
-    print("======================================")
-    print(" MKCENTRAL PLAYER API RESPONSE")
-    print("======================================")
-
-    print(
-        json.dumps(
-            data_player,
-            ensure_ascii=False,
-            indent=2
-        )
-    )
-
-    print("======================================")
-    print()
-
-    # -----------------------------------------
     # Details API
     # -----------------------------------------
 
@@ -213,6 +192,17 @@ def get_player_data(player_id):
     mmr = data_player.get(
         "mmr",
         0
+    )
+
+    # =====================================================
+    # PEAK MMR
+    #
+    # MKCentralのmaxMmr = 今シーズンのPeak MMR
+    # =====================================================
+
+    peak_mmr = data_player.get(
+        "maxMmr",
+        mmr
     )
 
     # -----------------------------------------
@@ -276,43 +266,41 @@ def get_player_data(player_id):
 
     return {
 
-    "player": player_name,
+        "player": player_name,
 
-    "mmr": mmr,
+        "mmr": mmr,
 
-    "last_change": last_change,
+        "peak_mmr": peak_mmr,
 
-    "win_rate":
-        last10_stats["win_rate"],
+        "last_change": last_change,
 
-    "wl":
-        last10_stats["wl"],
+        "win_rate":
+            last10_stats["win_rate"],
 
-    "mmr_change":
-        last10_stats["mmr_change"],
+        "wl":
+            last10_stats["wl"],
 
-    "avg_score":
-        last10_stats["avg_score"],
+        "mmr_change":
+            last10_stats["mmr_change"],
 
-    "top_score":
-        last10_stats["top_score"],
+        "avg_score":
+            last10_stats["avg_score"],
 
-    "f6_win_rate":
-        format6_stats["win_rate"],
+        "top_score":
+            last10_stats["top_score"],
 
-    "f6_wl":
-        format6_stats["wl"],
+        "f6_win_rate":
+            format6_stats["win_rate"],
 
-    "f6_mmr_change":
-        format6_stats["mmr_change"],
+        "f6_wl":
+            format6_stats["wl"],
 
-    "f6_avg_score":
-        format6_stats["avg_score"],
+        "f6_mmr_change":
+            format6_stats["mmr_change"],
 
-    # 一時的な確認用
-    "DEBUG_PLAYER_API":
-        data_player,
-}
+        "f6_avg_score":
+            format6_stats["avg_score"],
+    }
 
 
 # =========================================================
