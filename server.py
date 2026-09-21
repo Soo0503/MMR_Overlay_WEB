@@ -173,6 +173,20 @@ def get_player_data(player_id):
 
     data_player = res_player.json()
 
+print()
+print("======================================")
+print(" MKCentral Player API RESPONSE")
+print("======================================")
+print(
+    json.dumps(
+        data_player,
+        ensure_ascii=False,
+        indent=2
+    )
+)
+print("======================================")
+print()
+
 
     # -----------------------------------------
     # Details API
