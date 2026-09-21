@@ -9,6 +9,7 @@ HOST = "0.0.0.0"
 PORT = int(os.environ.get("PORT", 8000))
 SEASON = 16
 
+
 # =========================================================
 # 統計計算
 # =========================================================
@@ -100,7 +101,6 @@ def is_format_6(e):
         e.get("eventName", "")
     ).lower()
 
-
     if fmt in [
         "6",
         "6v6",
@@ -111,14 +111,11 @@ def is_format_6(e):
     ]:
         return True
 
-
     if "6v6" in event_name:
         return True
 
-
     if "6v6" in fmt:
         return True
-
 
     if (
         num_teams == "2"
@@ -129,7 +126,6 @@ def is_format_6(e):
         )
     ):
         return True
-
 
     return False
 
@@ -146,18 +142,15 @@ def get_player_data(player_id):
             "(Windows NT 10.0; Win64; x64)"
     }
 
-
     api_player_url = (
         "https://lounge.mkcentral.com/api/player"
         f"?id={player_id}&season={SEASON}"
     )
 
-
     api_details_url = (
         "https://lounge.mkcentral.com/api/player/details"
         f"?id={player_id}&season={SEASON}"
     )
-
 
     # -----------------------------------------
     # Player API
@@ -173,20 +166,26 @@ def get_player_data(player_id):
 
     data_player = res_player.json()
 
-print()
-print("======================================")
-print(" MKCentral Player API RESPONSE")
-print("======================================")
-print(
-    json.dumps(
-        data_player,
-        ensure_ascii=False,
-        indent=2
-    )
-)
-print("======================================")
-print()
+    # -----------------------------------------
+    # DEBUG
+    # Peak MMRの実際のキーを確認するためのログ
+    # -----------------------------------------
 
+    print()
+    print("======================================")
+    print(" MKCENTRAL PLAYER API RESPONSE")
+    print("======================================")
+
+    print(
+        json.dumps(
+            data_player,
+            ensure_ascii=False,
+            indent=2
+        )
+    )
+
+    print("======================================")
+    print()
 
     # -----------------------------------------
     # Details API
@@ -202,7 +201,6 @@ print()
 
     data_details = res_details.json()
 
-
     # -----------------------------------------
     # 基本情報
     # -----------------------------------------
@@ -212,12 +210,10 @@ print()
         "2.4 WB Party"
     )
 
-
     mmr = data_player.get(
         "mmr",
         0
     )
-
 
     # -----------------------------------------
     # 全試合履歴
@@ -227,7 +223,6 @@ print()
         "mmrChanges",
         []
     )
-
 
     # -----------------------------------------
     # LAST MATCH
@@ -241,17 +236,14 @@ print()
         )
 
         if last_delta > 0:
-
             last_change = f"+{last_delta}"
 
         else:
-
             last_change = str(last_delta)
 
     else:
 
         last_change = "±0"
-
 
     # -----------------------------------------
     # LAST 10
@@ -260,7 +252,6 @@ print()
     last10_stats = calc_stats(
         all_events[:10]
     )
-
 
     # -----------------------------------------
     # FORMAT 6
@@ -272,16 +263,12 @@ print()
         if is_format_6(e)
     ]
 
-
     if not format6_events:
-
         format6_events = all_events
-
 
     format6_stats = calc_stats(
         format6_events[:10]
     )
-
 
     # -----------------------------------------
     # JSON
@@ -294,7 +281,6 @@ print()
         "mmr": mmr,
 
         "last_change": last_change,
-
 
         "win_rate":
             last10_stats["win_rate"],
@@ -310,7 +296,6 @@ print()
 
         "top_score":
             last10_stats["top_score"],
-
 
         "f6_win_rate":
             format6_stats["win_rate"],
@@ -334,7 +319,6 @@ class OverlayHandler(
     SimpleHTTPRequestHandler
 ):
 
-
     def do_GET(self):
 
         parsed = urlparse(
@@ -342,7 +326,6 @@ class OverlayHandler(
         )
 
         path = parsed.path
-
 
         # =================================================
         # API
@@ -364,21 +347,18 @@ class OverlayHandler(
                 .strip("/")
             )
 
-
             if not player_id_str.isdigit():
 
                 self.send_error(
                     400,
-                    "Player IDが正しくありません"
+                    "Invalid Player ID"
                 )
 
                 return
 
-
             player_id = int(
                 player_id_str
             )
-
 
             try:
 
@@ -386,43 +366,35 @@ class OverlayHandler(
                     player_id
                 )
 
-
                 body = json.dumps(
                     data,
                     ensure_ascii=False
                 ).encode("utf-8")
 
-
                 self.send_response(
                     200
                 )
-
 
                 self.send_header(
                     "Content-Type",
                     "application/json; charset=utf-8"
                 )
 
-
                 self.send_header(
                     "Cache-Control",
                     "no-store"
                 )
-
 
                 self.send_header(
                     "Content-Length",
                     str(len(body))
                 )
 
-
                 self.end_headers()
-
 
                 self.wfile.write(
                     body
                 )
-
 
             except Exception as e:
 
@@ -432,22 +404,17 @@ class OverlayHandler(
                     f"{e}"
                 )
 
-
                 self.send_error(
                     500,
-                    "プレイヤーデータの取得に失敗しました"
+                    "Failed to retrieve player data"
                 )
 
-
             return
-
 
         # =================================================
         # Overlay
         #
         # /overlay/22693
-        #
-        # → index.html
         #
         # =================================================
 
@@ -464,30 +431,24 @@ class OverlayHandler(
                 .strip("/")
             )
 
-
             if not player_id_str.isdigit():
 
                 self.send_error(
                     400,
-                    "Player IDが正しくありません"
+                    "Invalid Player ID"
                 )
 
                 return
 
-
-            # index.htmlを返す
-
             self.path = "/index.html"
 
             return super().do_GET()
-
 
         # =================================================
         # その他
         # =================================================
 
         return super().do_GET()
-
 
     def log_message(
         self,
@@ -532,10 +493,6 @@ print(
 )
 print(
     f"http://{HOST}:{PORT}/api/player/22693"
-)
-print()
-print(
-    "終了するには Ctrl + C"
 )
 print()
 
