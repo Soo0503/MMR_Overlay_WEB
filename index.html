@@ -224,7 +224,7 @@ body {
 
 
 /* =========================
-   LAST MATCH
+   LAST MATCH / PEAK MMR
    ========================= */
 
 .last-change-box {
@@ -260,6 +260,8 @@ body {
     font-weight: 900;
 
     line-height: 0.85;
+
+    transition: color 0.3s ease;
 }
 
 
@@ -450,7 +452,10 @@ body {
                 <div class="last-change-box">
 
 
-                    <div class="last-change-label">
+                    <div
+                        class="last-change-label"
+                        id="lastChangeLabel"
+                    >
 
                         LAST MATCH
 
@@ -930,6 +935,134 @@ function getRankInfo(mmr) {
 
 
 /* =========================
+   LAST MATCH / PEAK MMR
+   切り替え
+   ========================= */
+
+let lastMatchValue = "-";
+
+let peakMmrValue = "-";
+
+let currentRankColor = "#ffffff";
+
+let showingPeakMmr = false;
+
+let peakTimer = null;
+
+
+function updateLastMatchPeakDisplay() {
+
+    const labelElem =
+        document.getElementById(
+            "lastChangeLabel"
+        );
+
+
+    const valueElem =
+        document.getElementById(
+            "lastChange"
+        );
+
+
+    if (!labelElem || !valueElem) {
+
+        return;
+
+    }
+
+
+    if (showingPeakMmr) {
+
+        labelElem.textContent =
+            "PEAK MMR";
+
+
+        valueElem.textContent =
+            peakMmrValue;
+
+
+        valueElem.style.color =
+            currentRankColor;
+
+    }
+
+    else {
+
+        labelElem.textContent =
+            "LAST MATCH";
+
+
+        valueElem.textContent =
+            lastMatchValue;
+
+
+        if (
+            lastMatchValue.startsWith("+")
+        ) {
+
+            valueElem.style.color =
+                "#2ecc71";
+
+        }
+
+        else if (
+            lastMatchValue.startsWith("-")
+        ) {
+
+            valueElem.style.color =
+                "#ff4757";
+
+        }
+
+        else {
+
+            valueElem.style.color =
+                "#ffffff";
+
+        }
+
+    }
+
+}
+
+
+/* =========================
+   切り替えタイマー開始
+   ========================= */
+
+function startPeakTimer() {
+
+    if (peakTimer !== null) {
+
+        clearInterval(
+            peakTimer
+        );
+
+    }
+
+
+    showingPeakMmr = false;
+
+    updateLastMatchPeakDisplay();
+
+
+    peakTimer =
+        setInterval(
+            function() {
+
+                showingPeakMmr =
+                    !showingPeakMmr;
+
+                updateLastMatchPeakDisplay();
+
+            },
+            7500
+        );
+
+}
+
+
+/* =========================
    データ更新
    ========================= */
 
@@ -943,12 +1076,12 @@ async function updateOverlay() {
 
 
         const response =
-           await fetch(
-             "/api/player/" +
-             playerId +
-             "?t=" +
-             Date.now()
-    );
+            await fetch(
+                "/api/player/" +
+                playerId +
+                "?t=" +
+                Date.now()
+            );
 
 
         if (!response.ok) {
@@ -1001,6 +1134,21 @@ async function updateOverlay() {
 
 
         /* =========================
+           PEAK MMR
+           ========================= */
+
+        peakMmrValue =
+            String(
+                data.peak_mmr ??
+                rawMmr
+            );
+
+
+        currentRankColor =
+            rankInfo.color;
+
+
+        /* =========================
            ランクアイコン
            ========================= */
 
@@ -1026,58 +1174,26 @@ async function updateOverlay() {
             };
 
 
-   iconElem.src =
-    "/" +
-    rankInfo.name +
-    ".png";
+        iconElem.src =
+            "/" +
+            rankInfo.name +
+            ".png";
 
-iconElem.style.display =
-    "block";
+
+        iconElem.style.display =
+            "block";
 
 
         /* =========================
            LAST MATCH
            ========================= */
 
-        const lastChangeElem =
-            document.getElementById(
-                "lastChange"
-            );
-
-
-        const lastValStr =
+        lastMatchValue =
             data.last_change ||
             "±0";
 
 
-        lastChangeElem.textContent =
-            lastValStr;
-
-
-        if (
-            lastValStr.startsWith("+")
-        ) {
-
-            lastChangeElem.style.color =
-                "#2ecc71";
-
-        }
-
-        else if (
-            lastValStr.startsWith("-")
-        ) {
-
-            lastChangeElem.style.color =
-                "#ff4757";
-
-        }
-
-        else {
-
-            lastChangeElem.style.color =
-                "#ffffff";
-
-        }
+        updateLastMatchPeakDisplay();
 
 
         /* =========================
@@ -1168,6 +1284,13 @@ iconElem.style.display =
    ========================= */
 
 updateOverlay();
+
+
+/* =========================
+   PEAK MMR切り替え開始
+   ========================= */
+
+startPeakTimer();
 
 
 /* =========================
