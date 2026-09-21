@@ -936,7 +936,6 @@ function getRankInfo(mmr) {
 
 /* =========================
    LAST MATCH / PEAK MMR
-   切り替え
    ========================= */
 
 let lastMatchValue = "-";
@@ -945,10 +944,10 @@ let peakMmrValue = "-";
 
 let currentRankColor = "#ffffff";
 
-let showingPeakMmr = false;
 
-let peakTimer = null;
-
+/* =========================
+   LAST MATCH / PEAK MMR表示
+   ========================= */
 
 function updateLastMatchPeakDisplay() {
 
@@ -971,22 +970,37 @@ function updateLastMatchPeakDisplay() {
     }
 
 
-    if (showingPeakMmr) {
+    /*
+       CSSの45秒スライド周期と同期
 
-        labelElem.textContent =
-            "PEAK MMR";
+       0 ～ 15秒
+           PAGE 1
+
+       15 ～ 30秒
+           PAGE 2
+
+       30 ～ 45秒
+           PAGE 3
+
+       PAGE 1の中では
+
+       0 ～ 7.5秒
+           LAST MATCH
+
+       7.5 ～ 15秒
+           PEAK MMR
+    */
 
 
-        valueElem.textContent =
-            peakMmrValue;
+    const elapsed =
+        performance.now() % 45000;
 
 
-        valueElem.style.color =
-            currentRankColor;
+    const page1Elapsed =
+        elapsed % 15000;
 
-    }
 
-    else {
+    if (page1Elapsed < 7500) {
 
         labelElem.textContent =
             "LAST MATCH";
@@ -1023,43 +1037,32 @@ function updateLastMatchPeakDisplay() {
 
     }
 
+    else {
+
+        labelElem.textContent =
+            "PEAK MMR";
+
+
+        valueElem.textContent =
+            peakMmrValue;
+
+
+        valueElem.style.color =
+            currentRankColor;
+
+    }
+
 }
 
 
 /* =========================
-   切り替えタイマー開始
+   0.1秒ごとにスライド位置確認
    ========================= */
 
-function startPeakTimer() {
-
-    if (peakTimer !== null) {
-
-        clearInterval(
-            peakTimer
-        );
-
-    }
-
-
-    showingPeakMmr = false;
-
-    updateLastMatchPeakDisplay();
-
-
-    peakTimer =
-        setInterval(
-            function() {
-
-                showingPeakMmr =
-                    !showingPeakMmr;
-
-                updateLastMatchPeakDisplay();
-
-            },
-            7500
-        );
-
-}
+setInterval(
+    updateLastMatchPeakDisplay,
+    100
+);
 
 
 /* =========================
@@ -1284,13 +1287,6 @@ async function updateOverlay() {
    ========================= */
 
 updateOverlay();
-
-
-/* =========================
-   PEAK MMR切り替え開始
-   ========================= */
-
-startPeakTimer();
 
 
 /* =========================
