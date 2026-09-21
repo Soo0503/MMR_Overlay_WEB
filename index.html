@@ -227,6 +227,11 @@ body {
    LAST MATCH / PEAK MMR
    ========================= */
 
+/*
+   現在MMRとの間に余白を作るため
+   margin-left を追加
+*/
+
 .last-change-box {
 
     display: flex;
@@ -236,8 +241,63 @@ body {
     align-items: flex-start;
 
     padding-bottom: 27px;
+
+    margin-left: 45px;
+
+    position: relative;
+
+    min-width: 260px;
+
+    height: 125px;
+
 }
 
+
+/*
+   表示内容を重ねてフェードさせる
+*/
+
+.last-change-content {
+
+    position: absolute;
+
+    left: 0;
+
+    bottom: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    opacity: 1;
+
+    transform: translateX(0);
+
+    transition:
+        opacity 0.8s ease,
+        transform 0.8s ease;
+
+}
+
+
+/*
+   切り替え時に一旦薄くする
+*/
+
+.last-change-content.fade-out {
+
+    opacity: 0;
+
+    transform: translateX(12px);
+
+}
+
+
+/*
+   ラベル
+*/
 
 .last-change-label {
 
@@ -253,6 +313,10 @@ body {
 }
 
 
+/*
+   数値
+*/
+
 .last-change-val {
 
     font-size: 100px;
@@ -261,7 +325,8 @@ body {
 
     line-height: 0.85;
 
-    transition: color 0.3s ease;
+    transition:
+        color 0.3s ease;
 }
 
 
@@ -353,7 +418,7 @@ body {
 
 
 /* =========================
-   アニメーション
+   スライドアニメーション
    ========================= */
 
 @keyframes fadeSlide {
@@ -381,6 +446,36 @@ body {
     100% {
         opacity: 0;
     }
+}
+
+
+/* =========================
+   LAST MATCH / PEAK MMR
+   フェードアニメーション
+   ========================= */
+
+@keyframes changeFade {
+
+    0% {
+        opacity: 0;
+        transform: translateX(12px);
+    }
+
+    12% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    88% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateX(-12px);
+    }
+
 }
 
 </style>
@@ -449,29 +544,45 @@ body {
                 </div>
 
 
-                <div class="last-change-box">
+                <!-- =========================
+                     LAST MATCH / PEAK MMR
+                     ========================= -->
 
-
-                    <div
-                        class="last-change-label"
-                        id="lastChangeLabel"
-                    >
-
-                        LAST MATCH
-
-                    </div>
-
+                <div
+                    class="last-change-box"
+                    id="lastChangeBox"
+                >
 
                     <div
-                        class="last-change-val"
-                        id="lastChange"
+                        class="last-change-content"
+                        id="lastChangeContent"
                     >
-                        -
-                    </div>
 
+                        <div
+                            class="last-change-label"
+                            id="lastChangeLabel"
+                        >
+
+                            LAST MATCH
+
+                        </div>
+
+
+                        <div
+                            class="last-change-val"
+                            id="lastChange"
+                        >
+                            -
+                        </div>
+
+                    </div>
 
                 </div>
 
+
+                <!-- =========================
+                     ランクアイコン
+                     ========================= -->
 
                 <div class="rank-icon-box">
 
@@ -757,7 +868,8 @@ function getPlayerId() {
 
 function getRankInfo(mmr) {
 
-    const val = Number(mmr);
+    const val =
+        Number(mmr);
 
 
     if (isNaN(val)) {
@@ -935,35 +1047,44 @@ function getRankInfo(mmr) {
 
 
 /* =========================
-   LAST MATCH / PEAK MMR
+   データ保持
    ========================= */
 
 let lastMatchValue = "-";
 
 let peakMmrValue = "-";
 
-let currentRankColor = "#ffffff";
+let currentRankColor =
+    "#ffffff";
 
 
 /* =========================
-   LAST MATCH / PEAK MMR表示
+   LAST MATCH 表示
    ========================= */
 
-function updateLastMatchPeakDisplay() {
+function showLastMatch() {
 
-    const labelElem =
+    const content =
+        document.getElementById(
+            "lastChangeContent"
+        );
+
+
+    const label =
         document.getElementById(
             "lastChangeLabel"
         );
 
 
-    const valueElem =
+    const value =
         document.getElementById(
             "lastChange"
         );
 
 
-    if (!labelElem || !valueElem) {
+    if (!content ||
+        !label ||
+        !value) {
 
         return;
 
@@ -971,98 +1092,244 @@ function updateLastMatchPeakDisplay() {
 
 
     /*
-       CSSの45秒スライド周期と同期
-
-       0 ～ 15秒
-           PAGE 1
-
-       15 ～ 30秒
-           PAGE 2
-
-       30 ～ 45秒
-           PAGE 3
-
-       PAGE 1の中では
-
-       0 ～ 7.5秒
-           LAST MATCH
-
-       7.5 ～ 15秒
-           PEAK MMR
+       一度フェードアウト
     */
 
-
-    const elapsed =
-        performance.now() % 45000;
-
-
-    const page1Elapsed =
-        elapsed % 15000;
+    content.classList.add(
+        "fade-out"
+    );
 
 
-    if (page1Elapsed < 7500) {
+    setTimeout(
+        function() {
 
-        labelElem.textContent =
-            "LAST MATCH";
-
-
-        valueElem.textContent =
-            lastMatchValue;
+            label.textContent =
+                "LAST MATCH";
 
 
-        if (
-            lastMatchValue.startsWith("+")
-        ) {
-
-            valueElem.style.color =
-                "#2ecc71";
-
-        }
-
-        else if (
-            lastMatchValue.startsWith("-")
-        ) {
-
-            valueElem.style.color =
-                "#ff4757";
-
-        }
-
-        else {
-
-            valueElem.style.color =
-                "#ffffff";
-
-        }
-
-    }
-
-    else {
-
-        labelElem.textContent =
-            "PEAK MMR";
+            value.textContent =
+                lastMatchValue;
 
 
-        valueElem.textContent =
-            peakMmrValue;
+            if (
+                lastMatchValue.startsWith("+")
+            ) {
+
+                value.style.color =
+                    "#2ecc71";
+
+            }
+
+            else if (
+                lastMatchValue.startsWith("-")
+            ) {
+
+                value.style.color =
+                    "#ff4757";
+
+            }
+
+            else {
+
+                value.style.color =
+                    "#ffffff";
+
+            }
 
 
-        valueElem.style.color =
-            currentRankColor;
+            /*
+               フェードイン
+            */
 
-    }
+            content.classList.remove(
+                "fade-out"
+            );
+
+
+        },
+        400
+    );
 
 }
 
 
 /* =========================
-   0.1秒ごとにスライド位置確認
+   PEAK MMR 表示
    ========================= */
 
-setInterval(
-    updateLastMatchPeakDisplay,
-    100
+function showPeakMmr() {
+
+    const content =
+        document.getElementById(
+            "lastChangeContent"
+        );
+
+
+    const label =
+        document.getElementById(
+            "lastChangeLabel"
+        );
+
+
+    const value =
+        document.getElementById(
+            "lastChange"
+        );
+
+
+    if (!content ||
+        !label ||
+        !value) {
+
+        return;
+
+    }
+
+
+    /*
+       一度フェードアウト
+    */
+
+    content.classList.add(
+        "fade-out"
+    );
+
+
+    setTimeout(
+        function() {
+
+            label.textContent =
+                "PEAK MMR";
+
+
+            value.textContent =
+                peakMmrValue;
+
+
+            value.style.color =
+                currentRankColor;
+
+
+            /*
+               フェードイン
+            */
+
+            content.classList.remove(
+                "fade-out"
+            );
+
+
+        },
+        400
+    );
+
+}
+
+
+/* =========================
+   スライド1の開始に同期
+   ========================= */
+
+const page1 =
+    document.querySelector(
+        ".page"
+    );
+
+
+let peakSwitchTimer =
+    null;
+
+
+/* =========================
+   45秒サイクル開始
+   ========================= */
+
+function syncPage1Cycle() {
+
+    if (peakSwitchTimer) {
+
+        clearTimeout(
+            peakSwitchTimer
+        );
+
+    }
+
+
+    /*
+       スライド1開始時
+
+       LAST MATCH
+    */
+
+    showLastMatch();
+
+
+    /*
+       7.5秒後
+
+       PEAK MMR
+    */
+
+    peakSwitchTimer =
+        setTimeout(
+            function() {
+
+                showPeakMmr();
+
+            },
+            7500
+        );
+
+}
+
+
+/* =========================
+   CSSアニメーション開始
+   ========================= */
+
+page1.addEventListener(
+    "animationstart",
+    function(event) {
+
+        if (
+            event.animationName ===
+            "fadeSlide"
+        ) {
+
+            syncPage1Cycle();
+
+        }
+
+    }
 );
+
+
+/* =========================
+   CSSアニメーション45秒終了
+   ========================= */
+
+page1.addEventListener(
+    "animationiteration",
+    function(event) {
+
+        if (
+            event.animationName ===
+            "fadeSlide"
+        ) {
+
+            syncPage1Cycle();
+
+        }
+
+    }
+);
+
+
+/*
+   初回
+*/
+
+syncPage1Cycle();
 
 
 /* =========================
@@ -1196,7 +1463,29 @@ async function updateOverlay() {
             "±0";
 
 
-        updateLastMatchPeakDisplay();
+        /*
+           現在表示中の内容が
+           LAST MATCHなら即更新
+
+           PEAK MMR表示中なら
+           次回切り替え時に更新
+        */
+
+        const label =
+            document.getElementById(
+                "lastChangeLabel"
+            );
+
+
+        if (
+            label &&
+            label.textContent ===
+            "LAST MATCH"
+        ) {
+
+            showLastMatch();
+
+        }
 
 
         /* =========================
