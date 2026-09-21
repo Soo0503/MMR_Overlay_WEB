@@ -227,11 +227,6 @@ body {
    LAST MATCH / PEAK MMR
    ========================= */
 
-/*
-   現在MMRとの間に余白を作るため
-   margin-left を追加
-*/
-
 .last-change-box {
 
     display: flex;
@@ -242,6 +237,10 @@ body {
 
     padding-bottom: 27px;
 
+    /*
+       現在MMRとの間に余白を作る
+    */
+
     margin-left: 45px;
 
     position: relative;
@@ -249,13 +248,12 @@ body {
     min-width: 260px;
 
     height: 125px;
-
 }
 
 
-/*
-   表示内容を重ねてフェードさせる
-*/
+/* =========================
+   表示内容
+   ========================= */
 
 .last-change-content {
 
@@ -278,12 +276,11 @@ body {
     transition:
         opacity 0.8s ease,
         transform 0.8s ease;
-
 }
 
 
 /*
-   切り替え時に一旦薄くする
+   フェードアウト中
 */
 
 .last-change-content.fade-out {
@@ -295,9 +292,9 @@ body {
 }
 
 
-/*
+/* =========================
    ラベル
-*/
+   ========================= */
 
 .last-change-label {
 
@@ -313,9 +310,9 @@ body {
 }
 
 
-/*
+/* =========================
    数値
-*/
+   ========================= */
 
 .last-change-val {
 
@@ -451,29 +448,37 @@ body {
 
 /* =========================
    LAST MATCH / PEAK MMR
-   フェードアニメーション
+   フェード用
    ========================= */
 
 @keyframes changeFade {
 
     0% {
         opacity: 0;
-        transform: translateX(12px);
+
+        transform:
+            translateX(12px);
     }
 
     12% {
         opacity: 1;
-        transform: translateX(0);
+
+        transform:
+            translateX(0);
     }
 
     88% {
         opacity: 1;
-        transform: translateX(0);
+
+        transform:
+            translateX(0);
     }
 
     100% {
         opacity: 0;
-        transform: translateX(-12px);
+
+        transform:
+            translateX(-12px);
     }
 
 }
@@ -535,6 +540,10 @@ body {
 
             <div class="mmr-container">
 
+
+                <!-- =========================
+                     現在MMR
+                     ========================= -->
 
                 <div
                     class="mmr-big"
@@ -1050,11 +1059,21 @@ function getRankInfo(mmr) {
    データ保持
    ========================= */
 
-let lastMatchValue = "-";
+let lastMatchValue =
+    "-";
 
-let peakMmrValue = "-";
 
-let currentRankColor =
+let peakMmrValue =
+    "-";
+
+
+/*
+   PEAK MMR専用カラー
+
+   現在MMRとは完全に独立
+*/
+
+let peakRankColor =
     "#ffffff";
 
 
@@ -1082,9 +1101,11 @@ function showLastMatch() {
         );
 
 
-    if (!content ||
+    if (
+        !content ||
         !label ||
-        !value) {
+        !value
+    ) {
 
         return;
 
@@ -1110,6 +1131,11 @@ function showLastMatch() {
             value.textContent =
                 lastMatchValue;
 
+
+            /*
+               LAST MATCHは
+               増減に応じた色
+            */
 
             if (
                 lastMatchValue.startsWith("+")
@@ -1177,9 +1203,11 @@ function showPeakMmr() {
         );
 
 
-    if (!content ||
+    if (
+        !content ||
         !label ||
-        !value) {
+        !value
+    ) {
 
         return;
 
@@ -1206,8 +1234,14 @@ function showPeakMmr() {
                 peakMmrValue;
 
 
+            /*
+               PEAK MMRは
+               PEAK自身のMMRから
+               ランク色を判定する
+            */
+
             value.style.color =
-                currentRankColor;
+                peakRankColor;
 
 
             /*
@@ -1378,7 +1412,7 @@ async function updateOverlay() {
 
 
         /* =========================
-           MMR
+           現在MMR
            ========================= */
 
         const rawMmr =
@@ -1395,9 +1429,19 @@ async function updateOverlay() {
             rawMmr;
 
 
-        const rankInfo =
-            getRankInfo(rawMmr);
+        /*
+           現在MMRのランク判定
+        */
 
+        const rankInfo =
+            getRankInfo(
+                rawMmr
+            );
+
+
+        /*
+           現在MMRの色
+        */
 
         mmrElement.style.color =
             rankInfo.color;
@@ -1414,8 +1458,26 @@ async function updateOverlay() {
             );
 
 
-        currentRankColor =
-            rankInfo.color;
+        /*
+           ここが今回の重要部分。
+
+           現在MMRとは完全に別に
+           PEAK MMR自身のランクを判定する。
+        */
+
+        const peakRankInfo =
+            getRankInfo(
+                data.peak_mmr ??
+                rawMmr
+            );
+
+
+        /*
+           PEAK MMR専用カラー
+        */
+
+        peakRankColor =
+            peakRankInfo.color;
 
 
         /* =========================
@@ -1464,11 +1526,8 @@ async function updateOverlay() {
 
 
         /*
-           現在表示中の内容が
-           LAST MATCHなら即更新
-
-           PEAK MMR表示中なら
-           次回切り替え時に更新
+           現在表示中がLAST MATCHなら
+           データだけ更新して再表示
         */
 
         const label =
