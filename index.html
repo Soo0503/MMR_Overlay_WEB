@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+<meta charset="UTF-8">
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+
+body {
+    margin: 0;
+    width: 1650px;
+    height: 400px;
+    overflow: hidden;
+
+    background: transparent;
+
+    font-family: "Segoe UI", Arial, sans-serif;
+
+    color: white;
+
+    text-shadow:
+        3px 3px 10px rgba(0, 0, 0, 0.95),
+        0 0 20px rgba(0, 0, 0, 0.8);
+}
+
+
+/* =========================
+   全体コンテナ
+   ========================= */
+
+.container {
+
+    width: 1650px;
+    height: 400px;
+
+    padding: 12px 35px;
+
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    border: 5px solid rgba(255, 255, 255, 0.9);
+
+    border-radius: 28px;
+
+    background: rgba(0, 0, 0, 0.35);
+
+    box-shadow:
+        0 0 20px rgba(0, 0, 0, 0.6),
+        inset 0 0 15px rgba(255, 255, 255, 0.1);
+}
+
+
+/* =========================
+   ヘッダー
+   ========================= */
+
+.header {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    z-index: 10;
+
+    height: 75px;
+
+    line-height: 1;
+
+    margin-top: 2px;
+}
+
+
+.player-name {
+
+    font-size: 110px;
+
+    font-weight: 900;
+
+    letter-spacing: -1px;
+
+    white-space: nowrap;
+
+    line-height: 0.75;
+}
+
+
+.season-tag {
+
+    font-size: 60px;
+
+    font-weight: 900;
+
+    color: #ffcc00;
+
+    white-space: nowrap;
+}
+
+
+/* =========================
+   コンテンツ
+   ========================= */
+
+.content-area {
+
+    position: relative;
+
+    width: 100%;
+
+    height: 275px;
+
+    overflow: hidden;
+}
+
+
+/* =========================
+   ページ
+   ========================= */
+
+.page {
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: space-between;
+
+    opacity: 0;
+
+    animation: fadeSlide 45s infinite;
+}
+
+
+.page:nth-child(1) {
+    animation-delay: 0s;
+}
+
+
+.page:nth-child(2) {
+    animation-delay: 15s;
+}
+
+
+.page:nth-child(3) {
+    animation-delay: 30s;
+}
+
+
+/* =========================
+   ページタイトル
+   ========================= */
+
+.page-title {
+
+    font-size: 80px;
+
+    font-weight: 900;
+
+    color: #00e5ff;
+
+    text-transform: uppercase;
+
+    letter-spacing: 2px;
+
+    line-height: 0.9;
+
+    margin-bottom: 0;
+}
+
+
+/* =========================
+   PAGE 1
+   ========================= */
+
+.mmr-container {
+
+    display: flex;
+
+    align-items: flex-end;
+
+    gap: 35px;
+
+    height: 205px;
+
+    position: relative;
+
+    margin-bottom: 18px;
+}
+
+
+.mmr-big {
+
+    font-size: 220px;
+
+    line-height: 0.72;
+
+    font-weight: 900;
+
+    letter-spacing: -4px;
+
+    color: #ffffff;
+
+    transition: color 0.5s ease;
+
+    margin-bottom: 12px;
+}
+
+
+/* =========================
+   LAST MATCH
+   ========================= */
+
+.last-change-box {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    padding-bottom: 27px;
+}
+
+
+.last-change-label {
+
+    font-size: 26px;
+
+    font-weight: 800;
+
+    opacity: 0.85;
+
+    letter-spacing: 1px;
+
+    margin-bottom: 0;
+}
+
+
+.last-change-val {
+
+    font-size: 100px;
+
+    font-weight: 900;
+
+    line-height: 0.85;
+}
+
+
+/* =========================
+   ランクアイコン
+   ========================= */
+
+.rank-icon-box {
+
+    display: flex;
+
+    align-items: flex-end;
+
+    height: 100%;
+
+    margin-left: auto;
+
+    padding-bottom: 5px;
+}
+
+
+.rank-icon {
+
+    height: 240px;
+
+    width: auto;
+
+    object-fit: contain;
+
+    filter:
+        drop-shadow(4px 8px 16px rgba(0, 0, 0, 0.95));
+}
+
+
+/* =========================
+   PAGE 2・3
+   ========================= */
+
+.stats-row {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: flex-end;
+
+    width: 100%;
+
+    height: 205px;
+
+    padding-bottom: 10px;
+}
+
+
+.stat-item {
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: flex-end;
+}
+
+
+.stat-label {
+
+    font-size: 32px;
+
+    font-weight: 800;
+
+    opacity: 0.85;
+
+    white-space: nowrap;
+
+    margin-bottom: 2px;
+}
+
+
+.stat-value {
+
+    font-size: 125px;
+
+    line-height: 0.85;
+
+    font-weight: 900;
+
+    white-space: nowrap;
+}
+
+
+/* =========================
+   アニメーション
+   ========================= */
+
+@keyframes fadeSlide {
+
+    0% {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    1.5% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    31.5% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    33.3% {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+    <!-- =========================
+         ヘッダー
+         ========================= -->
+
+    <div class="header">
+
+        <div
+            class="player-name"
+            id="playerName"
+        >
+            Loading...
+        </div>
+
+
+        <div class="season-tag">
+
+            SEASON 16
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         コンテンツ
+         ========================= -->
+
+    <div class="content-area">
+
+
+        <!-- =========================
+             PAGE 1
+             ========================= -->
+
+        <div class="page">
+
+
+            <div class="page-title">
+
+                CURRENT STATS
+
+            </div>
+
+
+            <div class="mmr-container">
+
+
+                <div
+                    class="mmr-big"
+                    id="mmr"
+                >
+                    Loading...
+                </div>
+
+
+                <div class="last-change-box">
+
+
+                    <div class="last-change-label">
+
+                        LAST MATCH
+
+                    </div>
+
+
+                    <div
+                        class="last-change-val"
+                        id="lastChange"
+                    >
+                        -
+                    </div>
+
+
+                </div>
+
+
+                <div class="rank-icon-box">
+
+
+                    <img
+                        id="rankIcon"
+                        class="rank-icon"
+                        src=""
+                        alt="Rank Icon"
+                        style="display: none;"
+                    >
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- =========================
+             PAGE 2
+             ========================= -->
+
+        <div class="page">
+
+
+            <div class="page-title">
+
+                LAST 10 GAMES
+
+            </div>
+
+
+            <div class="stats-row">
+
+
+                <div class="stat-item">
+
+                    <div class="stat-label">
+
+                        WIN RATE
+
+                    </div>
+
+                    <div
+                        class="stat-value"
+                        id="winRate"
+                    >
+                        -
+                    </div>
+
+                </div>
+
+
+
+                <div class="stat-item">
+
+                    <div class="stat-label">
+
+                        W - L
+
+                    </div>
+
+                    <div
+                        class="stat-value"
+                        id="wl"
+                    >
+                        -
+                    </div>
+
+                </div>
+
+
+
+                <div class="stat-item">
+
+                    <div class="stat-label">
+
+                        MMR CHANGE
+
+                    </div>
+
+                    <div
+                        class="stat-value"
+                        id="mmrChange"
+                    >
+                        -
+                    </div>
+
+                </div>
+
+
+
+                <div class="stat-item">
+
+                    <div class="stat-label">
+
+                        AVE. SCORE
+
+                    </div>
+
+                    <div
+                        class="stat-value"
+                        id="avgScore"
+                    >
+                        -
+                    </div>
+
+                </div>
+
+
+
+                <div class="stat-item">
+
+                    <div class="stat-label">
+
+                        TOP SCORE
+
+                    </div>
+
+                    <div
+                        class="stat-value"
+                        id="topScore"
+                    >
+                        -
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- =========================
+             PAGE 3
+             ========================= -->
+
+        <div class="page">
+
+
+            <div class="page-title">
+
+                FORMAT 6 (6v6)
+
+            </div>
+
+
+            <div class="stats-row">
+
+
+                <div class="stat-item">
+
+                    <div class="stat-label">
+
+                        WIN RATE
+
+                    </div>
+
+                    <div
+                        class="stat-value"
+                        id="f6WinRate"
+                    >
+                        -
+                    </div>
+
+                </div>
+
+
+
+                <div class="stat-item">
+
+                    <div class="stat-label">
+
+                        W - L
+
+                    </div>
+
+                    <div
+                        class="stat-value"
+                        id="f6Wl"
+                    >
+                        -
+                    </div>
+
+                </div>
+
+
+
+                <div class="stat-item">
+
+                    <div class="stat-label">
+
+                        MMR CHANGE
+
+                    </div>
+
+                    <div
+                        class="stat-value"
+                        id="f6MmrChange"
+                    >
+                        -
+                    </div>
+
+                </div>
+
+
+
+                <div class="stat-item">
+
+                    <div class="stat-label">
+
+                        AVE. SCORE
+
+                    </div>
+
+                    <div
+                        class="stat-value"
+                        id="f6AvgScore"
+                    >
+                        -
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+
+<script>
+
+
+/* =========================
+   Player ID取得
+   ========================= */
+
+function getPlayerId() {
+
+    const path =
+        window.location.pathname;
+
+
+    const match =
+        path.match(
+            /^\/overlay\/(\d+)\/?$/
+        );
+
+
+    if (!match) {
+
+        throw new Error(
+            "URLからPlayer IDを取得できません"
+        );
+
+    }
+
+
+    return match[1];
+
+}
+
+
+/* =========================
+   ランク判定
+   ========================= */
+
+function getRankInfo(mmr) {
+
+    const val = Number(mmr);
+
+
+    if (isNaN(val)) {
+
+        return {
+
+            color: "#ffffff",
+
+            name: "iron",
+
+            url:
+                "https://www.mkcentral.com/assets/ranks/iron.png"
+
+        };
+
+    }
+
+
+    if (val >= 17000) {
+
+        return {
+
+            color: "#b30000",
+
+            name: "grandmaster",
+
+            url:
+                "https://www.mkcentral.com/assets/ranks/grandmaster.png"
+
+        };
+
+    }
+
+
+    if (val >= 16000) {
+
+        return {
+
+            color: "#9b59b6",
+
+            name: "master",
+
+            url:
+                "https://www.mkcentral.com/assets/ranks/master.png"
+
+        };
+
+    }
+
+
+    if (val >= 14000) {
+
+        return {
+
+            color: "#00ffff",
+
+            name: "diamond",
+
+            url:
+                "https://www.mkcentral.com/assets/ranks/diamond.png"
+
+        };
+
+    }
+
+
+    if (val >= 12000) {
+
+        return {
+
+            color: "#ff2a6d",
+
+            name: "ruby",
+
+            url:
+                "https://www.mkcentral.com/assets/ranks/ruby.png"
+
+        };
+
+    }
+
+
+    if (val >= 10000) {
+
+        return {
+
+            color: "#286CD3",
+
+            name: "sapphire",
+
+            url:
+                "https://www.mkcentral.com/assets/ranks/sapphire.png"
+
+        };
+
+    }
+
+
+    if (val >= 8000) {
+
+        return {
+
+            color: "#005466",
+
+            name: "platinum",
+
+            url:
+                "https://www.mkcentral.com/assets/ranks/platinum.png"
+
+        };
+
+    }
+
+
+    if (val >= 6000) {
+
+        return {
+
+            color: "#FFC688",
+
+            name: "gold",
+
+            url:
+                "https://www.mkcentral.com/assets/ranks/gold.png"
+
+        };
+
+    }
+
+
+    if (val >= 4000) {
+
+        return {
+
+            color: "#d1d5db",
+
+            name: "silver",
+
+            url:
+                "https://www.mkcentral.com/assets/ranks/silver.png"
+
+        };
+
+    }
+
+
+    if (val >= 2000) {
+
+        return {
+
+            color: "#cd7f32",
+
+            name: "bronze",
+
+            url:
+                "https://www.mkcentral.com/assets/ranks/bronze.png"
+
+        };
+
+    }
+
+
+    return {
+
+        color: "#9ca3af",
+
+        name: "iron",
+
+        url:
+            "https://www.mkcentral.com/assets/ranks/iron.png"
+
+    };
+
+}
+
+
+/* =========================
+   データ更新
+   ========================= */
+
+async function updateOverlay() {
+
+    try {
+
+
+        const playerId =
+            getPlayerId();
+
+
+        const response =
+           await fetch(
+             "/api/player/" +
+             playerId +
+             "?t=" +
+             Date.now()
+    );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "プレイヤーデータを取得できませんでした"
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        /* =========================
+           プレイヤー名
+           ========================= */
+
+        document.getElementById(
+            "playerName"
+        ).textContent =
+            data.player;
+
+
+        /* =========================
+           MMR
+           ========================= */
+
+        const rawMmr =
+            data.mmr;
+
+
+        const mmrElement =
+            document.getElementById(
+                "mmr"
+            );
+
+
+        mmrElement.textContent =
+            rawMmr;
+
+
+        const rankInfo =
+            getRankInfo(rawMmr);
+
+
+        mmrElement.style.color =
+            rankInfo.color;
+
+
+        /* =========================
+           ランクアイコン
+           ========================= */
+
+        const iconElem =
+            document.getElementById(
+                "rankIcon"
+            );
+
+
+        iconElem.onerror =
+            function() {
+
+                if (
+                    this.src !==
+                    rankInfo.url
+                ) {
+
+                    this.src =
+                        rankInfo.url;
+
+                }
+
+            };
+
+
+        iconElem.src =
+            rankInfo.name +
+            ".png";
+
+
+        iconElem.style.display =
+            "block";
+
+
+        /* =========================
+           LAST MATCH
+           ========================= */
+
+        const lastChangeElem =
+            document.getElementById(
+                "lastChange"
+            );
+
+
+        const lastValStr =
+            data.last_change ||
+            "±0";
+
+
+        lastChangeElem.textContent =
+            lastValStr;
+
+
+        if (
+            lastValStr.startsWith("+")
+        ) {
+
+            lastChangeElem.style.color =
+                "#2ecc71";
+
+        }
+
+        else if (
+            lastValStr.startsWith("-")
+        ) {
+
+            lastChangeElem.style.color =
+                "#ff4757";
+
+        }
+
+        else {
+
+            lastChangeElem.style.color =
+                "#ffffff";
+
+        }
+
+
+        /* =========================
+           LAST 10 GAMES
+           ========================= */
+
+        document.getElementById(
+            "winRate"
+        ).textContent =
+            data.win_rate;
+
+
+        document.getElementById(
+            "wl"
+        ).textContent =
+            data.wl;
+
+
+        document.getElementById(
+            "mmrChange"
+        ).textContent =
+            data.mmr_change;
+
+
+        document.getElementById(
+            "avgScore"
+        ).textContent =
+            data.avg_score;
+
+
+        document.getElementById(
+            "topScore"
+        ).textContent =
+            data.top_score;
+
+
+        /* =========================
+           FORMAT 6
+           ========================= */
+
+        document.getElementById(
+            "f6WinRate"
+        ).textContent =
+            data.f6_win_rate || "-";
+
+
+        document.getElementById(
+            "f6Wl"
+        ).textContent =
+            data.f6_wl || "-";
+
+
+        document.getElementById(
+            "f6MmrChange"
+        ).textContent =
+            data.f6_mmr_change || "-";
+
+
+        document.getElementById(
+            "f6AvgScore"
+        ).textContent =
+            data.f6_avg_score || "-";
+
+
+        console.log(
+            "Overlay updated:",
+            data
+        );
+
+
+    }
+
+
+    catch (error) {
+
+        console.error(
+            "データ取得エラー:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================
+   初回更新
+   ========================= */
+
+updateOverlay();
+
+
+/* =========================
+   30秒ごとに更新
+   ========================= */
+
+setInterval(
+    updateOverlay,
+    30000
+);
+
+
+</script>
+
+
+</body>
+
+</html>
