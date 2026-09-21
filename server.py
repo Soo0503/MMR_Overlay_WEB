@@ -1,13 +1,13 @@
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
+import os
 import json
 import requests
 from urllib.parse import urlparse
 
 
-HOST = "127.0.0.1"
-PORT = 8000
+HOST = "0.0.0.0"
+PORT = int(os.environ.get("PORT", 8000))
 SEASON = 16
-
 
 # =========================================================
 # 統計計算
