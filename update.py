@@ -102,10 +102,10 @@ def get_player_data():
 
     # フォーマット6の試合抽出
     format6_events = [e for e in all_events if is_format_6(e)]
-    if not format6_events:
-        format6_events = all_events
 
-    format6_stats = calc_stats(format6_events[:10])
+    # Season内の全6v6試合を集計（直近10試合に限定しない）
+    # 6v6試合がない場合は空リストのままとし、他形式の戦績を混ぜない
+    format6_stats = calc_stats(format6_events)
 
     return {
         "player": player_name,
