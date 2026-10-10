@@ -253,11 +253,10 @@ def get_player_data(player_id):
         if is_format_6(e)
     ]
 
-    if not format6_events:
-        format6_events = all_events
-
+    # Season内の全6v6試合を集計（直近10試合に限定しない）
+    # 6v6試合がない場合は空リストのままとし、他形式の戦績を混ぜない
     format6_stats = calc_stats(
-        format6_events[:10]
+        format6_events
     )
 
     # -----------------------------------------
